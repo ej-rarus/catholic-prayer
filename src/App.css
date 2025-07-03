@@ -9,7 +9,7 @@ html, body {
 .App {
   text-align: center;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f0f8ff; /* AliceBlue */
+  background-color: var(--background-color);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -17,11 +17,22 @@ html, body {
 }
 
 .App-header {
-  background-color: #87CEEB; /* SkyBlue */
+  background-color: var(--primary-color);
   padding: 20px;
-  color: white;
+  color: var(--button-text-color);
   width: 100%;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  position: relative; /* Added for positioning the toggle button */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.App-logo {
+  height: 80px; /* Adjust as needed */
+  pointer-events: none;
+  margin-bottom: 10px;
 }
 
 h1 {
@@ -33,20 +44,20 @@ h1 {
 .App-subtitle {
   font-size: 1.2rem;
   margin-top: 5px;
-  color: #f0f8ff; /* Light color to stand out on header */
+  color: var(--button-text-color);
 }
 
 main {
-  padding: 20px 15px; /* Adjusted horizontal padding */
+  padding: 20px 15px;
   width: 100%;
   max-width: 800px;
-  flex-grow: 1; /* Allow main content to grow and push footer down */
+  flex-grow: 1;
 }
 
 .prayer-selection h2 {
   font-size: 1.5rem;
   margin-bottom: 20px;
-  color: #333;
+  color: var(--text-color);
 }
 
 .prayer-buttons {
@@ -58,15 +69,15 @@ main {
 }
 
 .prayer-buttons button {
-  background-color: #ffffff;
-  color: #4682B4; /* SteelBlue */
-  border: 2px solid #4682B4; /* SteelBlue */
+  background-color: var(--background-color);
+  color: var(--primary-color);
+  border: 2px solid var(--primary-color);
   border-radius: 8px;
   padding: 15px 20px;
   font-size: 1.2rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  min-height: 80px; /* Set a minimum height for buttons */
+  min-height: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -75,13 +86,13 @@ main {
 }
 
 .prayer-buttons button:hover {
-  background-color: #4682B4; /* SteelBlue */
-  color: white;
+  background-color: var(--primary-color);
+  color: var(--button-text-color);
   transform: translateY(-2px);
 }
 
 .prayer-title-header {
-  position: relative; /* For absolute positioning of children */
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -89,14 +100,14 @@ main {
 }
 
 .back-button {
-  position: absolute; /* Position relative to the header */
-  left: 15px; /* Adjusted left position */
+  position: absolute;
+  left: 15px;
   top: 50%;
   transform: translateY(-50%);
-  background-color: #f0f8ff;
-  border: 1px solid #cce2f5;
+  background-color: var(--background-color);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
-  color: #4682B4;
+  color: var(--primary-color);
   cursor: pointer;
   font-size: 1.2rem;
   font-weight: bold;
@@ -106,25 +117,25 @@ main {
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.15); /* Add shadow for depth */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
 }
 
 .back-button:hover {
-  background-color: #e1f0ff;
-  border-color: #a2cffe;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Darker shadow on hover */
+  background-color: var(--secondary-color);
+  border-color: var(--primary-color);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
 .prayer-view h2 {
   font-size: 1.8rem;
-  color: #005a9c;
+  color: var(--primary-color);
   margin: 0;
   text-align: center;
-  width: 100%; /* Ensure it takes full width for centering */
+  width: 100%;
 }
 
 .prayer-content {
-  background-color: #ffffff;
+  background-color: var(--background-color);
   border-radius: 8px;
   padding: 30px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
@@ -133,7 +144,7 @@ main {
 
 .prayer-line-container {
   display: flex;
-  align-items: flex-start; /* Align items to the top */
+  align-items: flex-start;
   margin: 8px 0;
 }
 
@@ -143,23 +154,23 @@ main {
   line-height: 1.6;
   cursor: pointer;
   transition: color 0.3s;
-  color: #333;
+  color: var(--text-color);
   padding: 5px;
   border-radius: 4px;
   flex-grow: 1;
-  word-break: keep-all; /* Keep words together */
-  overflow-wrap: break-word; /* Break long words if necessary */
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 .prayer-line.hidden {
-  color: #e0e0e0;
-  background-color: #e0e0e0;
-  word-break: break-all; /* Force break for the block characters */
+  color: var(--border-color);
+  background-color: var(--border-color);
+  word-break: break-all;
 }
 
 .highlighted-line {
-  background-color: #fffacd; /* LemonChiffon */
-  color: #000; /* Darker text for contrast */
+  background-color: var(--highlight-bg-color);
+  color: var(--highlight-text-color);
   font-weight: bold;
   transition: background-color 0.3s, color 0.3s;
 }
@@ -170,27 +181,29 @@ main {
   font-size: 1.5rem;
   cursor: pointer;
   margin-left: 15px;
-  color: #4682B4;
+  color: var(--primary-color);
   transition: color 0.3s;
-  padding-top: 12px; /* Adjust to vertically align with the first line of text */
+  padding-top: 12px;
 }
 
 .tts-button:hover {
-  color: #4169E1;
+  color: var(--secondary-color);
 }
 
 .voice-selector-container {
   margin-top: 20px;
   font-size: 1.1rem;
-  color: #333;
+  color: var(--text-color);
 }
 
 #voice-select {
   margin-left: 10px;
   padding: 8px 12px;
   border-radius: 5px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-color);
   font-size: 1rem;
+  background-color: var(--background-color);
+  color: var(--text-color);
 }
 
 .control-buttons {
@@ -201,8 +214,8 @@ main {
 }
 
 .reveal-button, .tts-control-button {
-  background-color: #4682B4; /* SteelBlue */
-  color: white;
+  background-color: var(--button-bg-color);
+  color: var(--button-text-color);
   border: none;
   border-radius: 5px;
   padding: 12px 25px;
@@ -212,7 +225,7 @@ main {
 }
 
 .reveal-button:hover, .tts-control-button:hover {
-  background-color: #4169E1; /* RoyalBlue */
+  background-color: var(--primary-color);
 }
 
 .share-buttons-container {
@@ -220,28 +233,28 @@ main {
   display: flex;
   justify-content: center;
   gap: 10px;
-  padding-bottom: 20px; /* Add padding to separate from footer */
+  padding-bottom: 20px;
 }
 
 .share-button {
-  background-color: #6a5acd; /* SlateBlue */
-  color: white;
+  background-color: var(--primary-color);
+  color: var(--button-text-color);
   border: none;
-  border-radius: 8px; /* Slightly more rounded */
-  padding: 12px 25px; /* Increased padding */
-  font-size: 1.1rem; /* Slightly larger font */
+  border-radius: 8px;
+  padding: 12px 25px;
+  font-size: 1.1rem;
   cursor: pointer;
-  transition: all 0.3s ease; /* Smooth transition for all properties */
-  box-shadow: 0 2px 5px rgba(0,0,0,0.15); /* Add shadow for depth */
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
 }
 
 .share-button:hover {
-  transform: translateY(-2px); /* Lift effect on hover */
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Darker shadow on hover */
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
 .share-button.copy-button {
-  background-color: #28a745; /* Deeper Green */
+  background-color: #28a745;
 }
 
 .share-button.copy-button:hover {
@@ -249,7 +262,7 @@ main {
 }
 
 .share-button.kakao-button {
-  background-color: #FEE500; /* Kakao Yellow */
+  background-color: #FEE500;
   color: #3C1E1E;
 }
 
@@ -258,10 +271,10 @@ main {
 }
 
 .App-footer {
-  margin-top: auto; /* Push footer to the bottom */
+  margin-top: auto;
   padding: 20px;
-  background-color: #e0e0e0; /* Light gray background */
-  color: #555;
+  background-color: var(--footer-bg-color);
+  color: var(--footer-text-color);
   font-size: 0.9rem;
   width: 100%;
   box-shadow: 0 -2px 4px rgba(0,0,0,0.05);
@@ -272,7 +285,7 @@ main {
 }
 
 .App-footer a {
-  color: #4682B4;
+  color: var(--primary-color);
   text-decoration: none;
 }
 
@@ -291,8 +304,8 @@ main {
 }
 
 .scroll-button {
-  background-color: #4682B4; /* SteelBlue */
-  color: white;
+  background-color: var(--button-bg-color);
+  color: var(--button-text-color);
   border: none;
   border-radius: 50%;
   width: 50px;
@@ -307,7 +320,7 @@ main {
 }
 
 .scroll-button:hover {
-  background-color: #4169E1; /* RoyalBlue */
+  background-color: var(--secondary-color);
   transform: scale(1.1);
 }
 
@@ -326,16 +339,16 @@ main {
   }
 
   .prayer-buttons {
-    grid-template-columns: 1fr; /* Stack buttons vertically */
+    grid-template-columns: 1fr;
     gap: 10px;
   }
 
   .prayer-title-header {
-    padding: 0 50px; /* Add padding to prevent title overlap */
+    padding: 0 50px;
   }
 
   .prayer-view h2 {
-    font-size: 1.3rem; /* Smaller title on mobile */
+    font-size: 1.3rem;
   }
 
   .back-button {
@@ -358,7 +371,7 @@ main {
   }
 
   .control-buttons {
-    flex-direction: column; /* Stack control buttons vertically */
+    flex-direction: column;
     gap: 12px;
   }
 
@@ -400,4 +413,36 @@ main {
   }
 }
 
+.theme-toggle-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: var(--button-bg-color);
+  color: var(--button-text-color);
+  border: none;
+  border-radius: 50%; /* Make it round */
+  width: 40px; /* Smaller size */
+  height: 40px; /* Smaller size */
+  font-size: 1.5rem; /* Adjust font size for emoji */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
 
+.theme-toggle-button:hover {
+  background-color: var(--secondary-color);
+  transform: scale(1.1);
+}
+
+@media (max-width: 600px) {
+  .theme-toggle-button {
+    top: 5px;
+    right: 5px;
+    width: 35px;
+    height: 35px;
+    font-size: 1.2rem;
+  }
+}

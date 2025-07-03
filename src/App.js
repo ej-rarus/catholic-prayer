@@ -21,6 +21,10 @@ function PrayerDetail({
   const [currentSpeakingLineIndex, setCurrentSpeakingLineIndex] = useState(-1); // New state for highlighting
   const utteranceRef = useRef(null); // Ref to store the SpeechSynthesisUtterance object
 
+  // Fixed speech rate and pitch
+  const speechRate = 0.9;
+  const speechPitch = 0.9;
+
   useEffect(() => {
     const prayer = prayers.find(p => p.title === prayerTitle);
     if (prayer) {
@@ -61,6 +65,8 @@ function PrayerDetail({
     } else {
       utterance.lang = 'ko-KR'; // Fallback
     }
+    utterance.rate = speechRate; // Apply fixed speech rate
+    utterance.pitch = speechPitch; // Apply fixed speech pitch
 
     utterance.onstart = () => {
       setCurrentSpeakingLineIndex(index);
@@ -96,6 +102,8 @@ function PrayerDetail({
           } else {
             utterance.lang = 'ko-KR';
           }
+          utterance.rate = speechRate; // Apply fixed speech rate
+          utterance.pitch = speechPitch; // Apply fixed speech pitch
 
           utterance.onstart = () => {
             setCurrentSpeakingLineIndex(currentLine);
@@ -158,6 +166,7 @@ function PrayerDetail({
           ))}
         </select>
       </div>
+      {/* Removed Speech Rate and Pitch Controls */}
       <div className="control-buttons">
         <button className="reveal-button" onClick={toggleAllLines}>
           {hiddenLines.some(line => line === true) ? "전체 보기" : "전체 가리기"}
@@ -166,7 +175,7 @@ function PrayerDetail({
           {isSpeaking ? "멈춤" : "전체 듣기"}
         </button>
       </div>
-      <ShareButtons prayerTitle={selectedPrayer.title} /> {/* Add ShareButtons here */}
+      <ShareButtons prayerTitle={selectedPrayer.title} />
     </div>
   );
 }
@@ -188,6 +197,7 @@ function Home({
           </button>
         ))}
       </div>
+      <ShareButtons shareTitle="가톨릭 기도문 암송 도우미" shareDescription="가톨릭 기도문 암송을 도와주는 웹 애플리케이션입니다. 다양한 기도문을 선택하고 음성으로 들으며 암송 연습을 할 수 있습니다." />
     </div>
   );
 }
@@ -244,7 +254,8 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h1 onClick={goToHome} style={{ cursor: 'pointer' }}>가톨릭 기도문 암송 도우미</h1>
+        <h1 onClick={goToHome} style={{ cursor: 'pointer' }}>베다의 기도</h1>
+        <p className="App-subtitle">매일의 기도 생활을 위한 안내</p>
       </header>
       <main>
         <Routes>
@@ -276,3 +287,5 @@ export default function AppWrapper() {
     </Router>
   );
 }
+
+

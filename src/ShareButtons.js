@@ -1,7 +1,13 @@
 import React from 'react';
 
-function ShareButtons({ prayerTitle }) {
+function ShareButtons({ shareTitle, shareDescription }) {
   const currentUrl = window.location.href;
+
+  const defaultTitle = "가톨릭 기도문 암송 도우미";
+  const defaultDescription = "가톨릭 기도문 암송을 도와주는 웹 애플리케이션입니다. 다양한 기도문을 선택하고 음성으로 들으며 암송 연습을 할 수 있습니다.";
+
+  const titleToShare = shareTitle || defaultTitle;
+  const descriptionToShare = shareDescription || defaultDescription;
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(currentUrl)
@@ -26,10 +32,10 @@ function ShareButtons({ prayerTitle }) {
       Kakao.Share.sendDefault({
         objectType: 'feed',
         content: {
-          title: `가톨릭 기도문: ${prayerTitle}`,
-          description: `${prayerTitle} 기도문을 함께 암송해요.`, 
+          title: titleToShare,
+          description: descriptionToShare, 
           imageUrl:
-            '%PUBLIC_URL%/logo512.png', // Replace with your app's logo URL
+            `${window.location.origin}/logo512.png`, // Use absolute URL for image
           link: {
             mobileWebUrl: currentUrl,
             webUrl: currentUrl,

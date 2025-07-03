@@ -1,3 +1,11 @@
+html, body {
+  overflow-x: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
+
 .App {
   text-align: center;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -22,8 +30,14 @@ h1 {
   font-weight: 600;
 }
 
+.App-subtitle {
+  font-size: 1.2rem;
+  margin-top: 5px;
+  color: #f0f8ff; /* Light color to stand out on header */
+}
+
 main {
-  padding: 20px 40px; /* Increased horizontal padding */
+  padding: 20px 15px; /* Adjusted horizontal padding */
   width: 100%;
   max-width: 800px;
   flex-grow: 1; /* Allow main content to grow and push footer down */
@@ -76,7 +90,7 @@ main {
 
 .back-button {
   position: absolute; /* Position relative to the header */
-  left: 0;
+  left: 15px; /* Adjusted left position */
   top: 50%;
   transform: translateY(-50%);
   background-color: #f0f8ff;
@@ -307,6 +321,10 @@ main {
     font-size: 1.5rem;
   }
 
+  .App-subtitle {
+    font-size: 0.9rem;
+  }
+
   .prayer-buttons {
     grid-template-columns: 1fr; /* Stack buttons vertically */
     gap: 10px;
@@ -381,4 +399,5 @@ main {
     width: 100%;
   }
 }
+
 

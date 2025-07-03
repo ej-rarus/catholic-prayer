@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate, useParams } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useNavigate, useParams, useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import './App.css';
 import { prayers } from './prayers';
@@ -208,8 +208,16 @@ function App() {
   const [selectedVoice, setSelectedVoice] = useState(null);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const { theme, toggleTheme } = useTheme(); // Use the theme context
+  const [showSearch, setShowSearch] = useState(false); // State for showing/hiding search
+  const [searchTerm, setSearchTerm] = useState(''); // State for search term
+  const [filteredPrayers, setFilteredPrayers] = useState([]); // State for filtered prayers
 
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location]);
 
   // Effect for managing voice synthesis
   useEffect(() => {
@@ -241,29 +249,80 @@ function App() {
     };
   }, [selectedVoice]);
 
+  // Effect for filtering prayers based on search term
+  useEffect(() => {
+    if (searchTerm) {
+      const lowercasedSearchTerm = searchTerm.toLowerCase();
+      const results = prayers.filter(
+        (prayer) =>
+          prayer.title.toLowerCase().includes(lowercasedSearchTerm) ||
+          prayer.content.some((line) =>
+            line.toLowerCase().includes(lowercasedSearchTerm)
+          )
+      );
+      setFilteredPrayers(results);
+    } else {
+      setFilteredPrayers([]);
+    }
+  }, [searchTerm]);
+
   const selectPrayer = (prayer) => {
     window.speechSynthesis.cancel();
     setIsSpeaking(false);
     navigate(`/prayer/${prayer.title}`);
+    setShowSearch(false); // Hide search results after selection
+    setSearchTerm(''); // Clear search term
   };
 
   const goToHome = () => {
     window.speechSynthesis.cancel();
     setIsSpeaking(false);
     navigate('/');
+    setShowSearch(false); // Hide search results when going home
+    setSearchTerm(''); // Clear search term
   };
 
   return (
     <div className="App">
       <header className="App-header">
-        <img src="/logo.png" className="App-logo" alt="logo" />
-        <h1 onClick={goToHome} style={{ cursor: 'pointer' }}>베다의 기도</h1>
-        <p className="App-subtitle">가톨릭 기도문 암송 도우미</p>
-        <button onClick={toggleTheme} className="theme-toggle-button">
-          {theme === 'light' ? '🌙' : '☀️'}
-        </button>
+        <div className="header-main-content" onClick={goToHome} style={{ cursor: 'pointer' }}>
+          <img src="/logo.png" className="App-logo" alt="logo" />
+          <h1>베다의 기도</h1>
+          <p className="App-subtitle">가톨릭 기도문 암송 도우미</p>
+        </div>
+        <div className="header-buttons">
+          <button onClick={toggleTheme} className="theme-toggle-button">
+            {theme === 'light' ? '🌙' : '☀️'}
+          </button>
+          <button onClick={() => setShowSearch(!showSearch)} className="search-toggle-button">
+            🔍
+          </button>
+        </div>
       </header>
       <main>
+        {showSearch && (
+          <div className="search-container">
+            <input
+              type="text"
+              placeholder="기도문 검색..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="search-input"
+            />
+            {searchTerm && filteredPrayers.length > 0 && (
+              <ul className="search-results">
+                {filteredPrayers.map((prayer) => (
+                  <li key={prayer.title} onClick={() => selectPrayer(prayer)}>
+                    {prayer.title}
+                  </li>
+                ))}
+              </ul>
+            )}
+            {searchTerm && filteredPrayers.length === 0 && (
+              <p className="no-results">검색 결과가 없습니다.</p>
+            )}
+          </div>
+        )}
         <Routes>
           <Route path="/" element={<Home selectPrayer={selectPrayer} />} />
           <Route
@@ -293,5 +352,3 @@ export default function AppWrapper() {
     </Router>
   );
 }
-
-

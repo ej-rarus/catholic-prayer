@@ -10,7 +10,6 @@ html, body {
   text-align: center;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: var(--background-color);
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -18,19 +17,34 @@ html, body {
 
 .App-header {
   background-color: var(--primary-color);
-  padding: 20px;
+  padding: 15px 20px; /* Add horizontal padding */
   color: var(--button-text-color);
   width: 100%;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  position: relative; /* Added for positioning the toggle button */
+  position: fixed;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: row; /* Changed to row for horizontal alignment */
+  align-items: center;
+  justify-content: center; /* Center the main content */
+  position: relative; /* Added for absolute positioning of buttons */
+}
+
+.header-main-content {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  cursor: pointer;
+}
+
+.header-right {
+  display: flex;
+  gap: 10px;
 }
 
 .App-logo {
-  height: 80px; /* Adjust as needed */
+  height: 80px;
   pointer-events: none;
   margin-bottom: 10px;
 }
@@ -47,8 +61,82 @@ h1 {
   color: var(--button-text-color);
 }
 
+.theme-toggle-button, .search-toggle-button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--button-text-color);
+  transition: transform 0.2s ease-in-out;
+  padding: 5px; /* Add padding for better click area */
+  border-radius: 5px; /* Slightly rounded corners */
+}
+
+.theme-toggle-button:hover, .search-toggle-button:hover {
+  transform: scale(1.1);
+  background-color: rgba(255, 255, 255, 0.2); /* Subtle hover effect */
+}
+
+/* Search styles */
+.search-container {
+  margin-top: 0px; /* Adjust based on new header height */
+  margin-bottom: 20px;
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  padding: 0 15px; /* Add horizontal padding */
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  font-size: 1rem;
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.search-results {
+  list-style: none;
+  padding: 0;
+  margin: 5px 0 0;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  background-color: var(--background-color);
+  position: absolute;
+  width: calc(100% - 30px); /* Adjust width for padding */
+  z-index: 10;
+  max-height: 200px;
+  overflow-y: auto;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.search-results li {
+  padding: 10px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-color);
+}
+
+.search-results li:last-child {
+  border-bottom: none;
+}
+
+.search-results li:hover {
+  background-color: var(--primary-color);
+  color: var(--button-text-color);
+}
+
+.no-results {
+  color: var(--text-color);
+  margin-top: 10px;
+  text-align: center;
+}
+
 main {
   padding: 20px 15px;
+  margin-top: 10px; /* Adjusted margin-top for single-row header */
   width: 100%;
   max-width: 800px;
   flex-grow: 1;
@@ -293,6 +381,30 @@ main {
   text-decoration: underline;
 }
 
+.header-buttons {
+  position: absolute;
+  top: 10px; /* Adjusted to move higher */
+  right: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.theme-toggle-button, .search-toggle-button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--button-text-color);
+  transition: transform 0.2s ease-in-out;
+  padding: 5px; /* Add padding for better click area */
+  border-radius: 5px; /* Slightly rounded corners */
+}
+
+.theme-toggle-button:hover, .search-toggle-button:hover {
+  transform: scale(1.1);
+  background-color: rgba(255, 255, 255, 0.2); /* Subtle hover effect */
+}
+
 .scroll-buttons-container {
   position: fixed;
   bottom: 20px;
@@ -413,36 +525,3 @@ main {
   }
 }
 
-.theme-toggle-button {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background-color: var(--button-bg-color);
-  color: var(--button-text-color);
-  border: none;
-  border-radius: 50%; /* Make it round */
-  width: 40px; /* Smaller size */
-  height: 40px; /* Smaller size */
-  font-size: 1.5rem; /* Adjust font size for emoji */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background-color 0.3s, color 0.3s;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-}
-
-.theme-toggle-button:hover {
-  background-color: var(--secondary-color);
-  transform: scale(1.1);
-}
-
-@media (max-width: 600px) {
-  .theme-toggle-button {
-    top: 5px;
-    right: 5px;
-    width: 35px;
-    height: 35px;
-    font-size: 1.2rem;
-  }
-}

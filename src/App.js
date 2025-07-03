@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate, useParams } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import './App.css';
 import { prayers } from './prayers';
 import Footer from './Footer';
 import ScrollButtons from './ScrollButtons';
 import ShareButtons from './ShareButtons'; // Import ShareButtons
+import { useTheme } from './ThemeContext'; // Import useTheme
 
 function PrayerDetail({
   voices,
@@ -29,7 +30,7 @@ function PrayerDetail({
     const prayer = prayers.find(p => p.title === prayerTitle);
     if (prayer) {
       setSelectedPrayer(prayer);
-      setHiddenLines(Array(prayer.content.length).fill(true));
+      setHiddenLines(Array(prayer.content.length).fill(false));
     } else {
       navigate('/'); // Navigate to home if prayer not found
     }
@@ -206,6 +207,7 @@ function App() {
   const [voices, setVoices] = useState([]);
   const [selectedVoice, setSelectedVoice] = useState(null);
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const { theme, toggleTheme } = useTheme(); // Use the theme context
 
   const navigate = useNavigate();
 
@@ -254,8 +256,12 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
+        <img src="/logo.png" className="App-logo" alt="logo" />
         <h1 onClick={goToHome} style={{ cursor: 'pointer' }}>베다의 기도</h1>
-        <p className="App-subtitle">매일의 기도 생활을 위한 안내</p>
+        <p className="App-subtitle">가톨릭 기도문 암송 도우미</p>
+        <button onClick={toggleTheme} className="theme-toggle-button">
+          {theme === 'light' ? '🌙' : '☀️'}
+        </button>
       </header>
       <main>
         <Routes>

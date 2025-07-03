@@ -1,13 +1,205 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { BrowserRouter as Router, Routes, Route, useNavigate, useParams } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 import './App.css';
 import { prayers } from './prayers';
+import Footer from './Footer';
+import ScrollButtons from './ScrollButtons';
+import ShareButtons from './ShareButtons'; // Import ShareButtons
 
-function App() {
+function PrayerDetail({
+  voices,
+  selectedVoice,
+  setSelectedVoice,
+  isSpeaking,
+  setIsSpeaking,
+}) {
+  const { prayerTitle } = useParams();
+  const navigate = useNavigate();
   const [selectedPrayer, setSelectedPrayer] = useState(null);
   const [hiddenLines, setHiddenLines] = useState([]);
+  const [currentSpeakingLineIndex, setCurrentSpeakingLineIndex] = useState(-1); // New state for highlighting
+  const utteranceRef = useRef(null); // Ref to store the SpeechSynthesisUtterance object
+
+  useEffect(() => {
+    const prayer = prayers.find(p => p.title === prayerTitle);
+    if (prayer) {
+      setSelectedPrayer(prayer);
+      setHiddenLines(Array(prayer.content.length).fill(true));
+    } else {
+      navigate('/'); // Navigate to home if prayer not found
+    }
+    window.speechSynthesis.cancel();
+    setIsSpeaking(false);
+    setCurrentSpeakingLineIndex(-1); // Reset highlight on prayer change
+  }, [prayerTitle, navigate, setIsSpeaking]);
+
+  const toggleLine = (index) => {
+    const newHiddenLines = [...hiddenLines];
+    newHiddenLines[index] = !newHiddenLines[index];
+    setHiddenLines(newHiddenLines);
+  };
+
+  const toggleAllLines = () => {
+    const anyHidden = hiddenLines.some(line => line === true);
+    setHiddenLines(Array(selectedPrayer.content.length).fill(!anyHidden));
+  };
+
+  const goBack = () => {
+    navigate(-1);
+  }
+
+  const speak = (text, index = -1) => {
+    window.speechSynthesis.cancel();
+    setIsSpeaking(false); // Stop any ongoing full prayer speech
+    setCurrentSpeakingLineIndex(-1); // Clear previous highlight
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    const voice = voices.find(v => v.voiceURI === selectedVoice);
+    if (voice) {
+      utterance.voice = voice;
+    } else {
+      utterance.lang = 'ko-KR'; // Fallback
+    }
+
+    utterance.onstart = () => {
+      setCurrentSpeakingLineIndex(index);
+      setIsSpeaking(true);
+    };
+    utterance.onend = () => {
+      setCurrentSpeakingLineIndex(-1);
+      setIsSpeaking(false);
+    };
+    utterance.onerror = () => {
+      setCurrentSpeakingLineIndex(-1);
+      setIsSpeaking(false);
+    };
+
+    window.speechSynthesis.speak(utterance);
+    utteranceRef.current = utterance; // Store the utterance object
+  };
+
+  const toggleSpeakAll = () => {
+    if (isSpeaking) {
+      window.speechSynthesis.cancel();
+      setIsSpeaking(false);
+      setCurrentSpeakingLineIndex(-1);
+    } else {
+      let currentLine = 0;
+      const speakNextLine = () => {
+        if (currentLine < selectedPrayer.content.length) {
+          const text = selectedPrayer.content[currentLine];
+          const utterance = new SpeechSynthesisUtterance(text);
+          const voice = voices.find(v => v.voiceURI === selectedVoice);
+          if (voice) {
+            utterance.voice = voice;
+          } else {
+            utterance.lang = 'ko-KR';
+          }
+
+          utterance.onstart = () => {
+            setCurrentSpeakingLineIndex(currentLine);
+            setIsSpeaking(true);
+          };
+          utterance.onend = () => {
+            currentLine++;
+            speakNextLine();
+          };
+          utterance.onerror = () => {
+            setCurrentSpeakingLineIndex(-1);
+            setIsSpeaking(false);
+          };
+          window.speechSynthesis.speak(utterance);
+          utteranceRef.current = utterance;
+        } else {
+          setCurrentSpeakingLineIndex(-1);
+          setIsSpeaking(false);
+        }
+      };
+      window.speechSynthesis.cancel(); // Cancel any previous speech
+      speakNextLine();
+    }
+  };
+
+  if (!selectedPrayer) {
+    return null; // Or a loading spinner
+  }
+
+  return (
+    <div className="prayer-view">
+      <Helmet>
+        <title>{selectedPrayer.title} - 가톨릭 기도문 암송 도우미</title>
+        <meta name="description" content={`${selectedPrayer.title} 기도문 암송을 도와주는 도우미 앱입니다.`} />
+      </Helmet>
+      <div className="prayer-title-header">
+        <button className="back-button" onClick={goBack}>←</button>
+        <h2>{selectedPrayer.title}</h2>
+      </div>
+      <div className="prayer-content">
+        {selectedPrayer.content.map((line, index) => (
+          <div key={index} className="prayer-line-container">
+            <p
+              className={`prayer-line ${hiddenLines[index] ? 'hidden' : ''} ${currentSpeakingLineIndex === index ? 'highlighted-line' : ''}`}
+              onClick={() => toggleLine(index)}
+            >
+              {hiddenLines[index] ? '█'.repeat(line.length) : line}
+            </p>
+            <button className="tts-button" onClick={() => speak(line, index)}>🔊</button>
+          </div>
+        ))}
+      </div>
+      <div className="voice-selector-container">
+        <label htmlFor="voice-select">목소리 선택: </label>
+        <select id="voice-select" value={selectedVoice || ''} onChange={(e) => setSelectedVoice(e.target.value)}>
+          {voices.map((voice) => (
+            <option key={voice.voiceURI} value={voice.voiceURI}>
+              {`${voice.name} (${voice.lang})`}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className="control-buttons">
+        <button className="reveal-button" onClick={toggleAllLines}>
+          {hiddenLines.some(line => line === true) ? "전체 보기" : "전체 가리기"}
+        </button>
+        <button className="tts-control-button" onClick={toggleSpeakAll}>
+          {isSpeaking ? "멈춤" : "전체 듣기"}
+        </button>
+      </div>
+      <ShareButtons prayerTitle={selectedPrayer.title} /> {/* Add ShareButtons here */}
+    </div>
+  );
+}
+
+function Home({
+  selectPrayer,
+}) {
+  return (
+    <div className="prayer-selection">
+      <Helmet>
+        <title>가톨릭 기도문 암송 도우미</title>
+        <meta name="description" content="가톨릭 기도문 암송을 도와주는 웹 애플리케이션입니다. 다양한 기도문을 선택하고 음성으로 들으며 암송 연습을 할 수 있습니다." />
+      </Helmet>
+      <h2>기도문 선택</h2>
+      <div className="prayer-buttons">
+        {prayers.map((prayer, index) => (
+          <button key={index} onClick={() => selectPrayer(prayer)}>
+            {prayer.title}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function App() {
   const [voices, setVoices] = useState([]);
   const [selectedVoice, setSelectedVoice] = useState(null);
+  const [isSpeaking, setIsSpeaking] = useState(false);
 
+  const navigate = useNavigate();
+
+  // Effect for managing voice synthesis
   useEffect(() => {
     const populateVoiceList = () => {
       const availableVoices = window.speechSynthesis.getVoices();
@@ -33,118 +225,54 @@ function App() {
 
     return () => {
       window.speechSynthesis.cancel();
+      setIsSpeaking(false);
     };
   }, [selectedVoice]);
 
   const selectPrayer = (prayer) => {
     window.speechSynthesis.cancel();
-    setSelectedPrayer(prayer);
-    setHiddenLines(Array(prayer.content.length).fill(true));
+    setIsSpeaking(false);
+    navigate(`/prayer/${prayer.title}`);
   };
 
-  const toggleLine = (index) => {
-    const newHiddenLines = [...hiddenLines];
-    newHiddenLines[index] = !newHiddenLines[index];
-    setHiddenLines(newHiddenLines);
-  };
-
-  const toggleAllLines = () => {
-    const anyHidden = hiddenLines.some(line => line === true);
-    setHiddenLines(Array(selectedPrayer.content.length).fill(!anyHidden));
-  };
-
-  const speak = (text) => {
+  const goToHome = () => {
     window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    const voice = voices.find(v => v.voiceURI === selectedVoice);
-    if (voice) {
-      utterance.voice = voice;
-    } else {
-      utterance.lang = 'ko-KR'; // Fallback
-    }
-    window.speechSynthesis.speak(utterance);
-  };
-
-  const speakAll = () => {
-    window.speechSynthesis.cancel();
-    const textToSpeak = selectedPrayer.content.join(' ');
-    const utterance = new SpeechSynthesisUtterance(textToSpeak);
-    const voice = voices.find(v => v.voiceURI === selectedVoice);
-    if (voice) {
-      utterance.voice = voice;
-    } else {
-      utterance.lang = 'ko-KR'; // Fallback
-    }
-    window.speechSynthesis.speak(utterance);
-  };
-
-  const stopSpeaking = () => {
-    window.speechSynthesis.cancel();
+    setIsSpeaking(false);
+    navigate('/');
   };
 
   return (
     <div className="App">
       <header className="App-header">
-        <h1>가톨릭 기도문 암송 도우미</h1>
+        <h1 onClick={goToHome} style={{ cursor: 'pointer' }}>가톨릭 기도문 암송 도우미</h1>
       </header>
       <main>
-        {!selectedPrayer ? (
-          <div className="prayer-selection">
-            <h2>기도문 선택</h2>
-            <div className="prayer-buttons">
-              {prayers.map((prayer, index) => (
-                <button key={index} onClick={() => selectPrayer(prayer)}>
-                  {prayer.title}
-                </button>
-              ))}
-            </div>
-          </div>
-        ) : (
-          <div className="prayer-view">
-            <button className="back-button" onClick={() => {
-              stopSpeaking();
-              setSelectedPrayer(null);
-            }}>← 뒤로가기</button>
-            <h2>{selectedPrayer.title}</h2>
-            <div className="prayer-content">
-              {selectedPrayer.content.map((line, index) => (
-                <div key={index} className="prayer-line-container">
-                  <p
-                    className={`prayer-line ${hiddenLines[index] ? 'hidden' : ''}`}
-                    onClick={() => toggleLine(index)}
-                  >
-                    {hiddenLines[index] ? '█'.repeat(line.length) : line}
-                  </p>
-                  <button className="tts-button" onClick={() => speak(line)}>🔊</button>
-                </div>
-              ))}
-            </div>
-            <div className="voice-selector-container">
-              <label htmlFor="voice-select">목소리 선택: </label>
-              <select id="voice-select" value={selectedVoice || ''} onChange={(e) => setSelectedVoice(e.target.value)}>
-                {voices.map((voice) => (
-                  <option key={voice.voiceURI} value={voice.voiceURI}>
-                    {`${voice.name} (${voice.lang})`}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="control-buttons">
-              <button className="reveal-button" onClick={toggleAllLines}>
-                {hiddenLines.some(line => line === true) ? "전체 보기" : "전체 가리기"}
-              </button>
-              <button className="tts-control-button" onClick={speakAll}>
-                전체 듣기
-              </button>
-              <button className="tts-control-button" onClick={stopSpeaking}>
-                멈춤
-              </button>
-            </div>
-          </div>
-        )}
+        <Routes>
+          <Route path="/" element={<Home selectPrayer={selectPrayer} />} />
+          <Route
+            path="/prayer/:prayerTitle"
+            element={
+              <PrayerDetail
+                voices={voices}
+                selectedVoice={selectedVoice}
+                setSelectedVoice={setSelectedVoice}
+                isSpeaking={isSpeaking}
+                setIsSpeaking={setIsSpeaking}
+              />
+            }
+          />
+        </Routes>
       </main>
+      <Footer />
+      <ScrollButtons />
     </div>
   );
 }
 
-export default App;
+export default function AppWrapper() {
+  return (
+    <Router>
+      <App />
+    </Router>
+  );
+}

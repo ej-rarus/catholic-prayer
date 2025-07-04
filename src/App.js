@@ -278,9 +278,13 @@ function App() {
       setVoices(koreanVoices.length > 0 ? koreanVoices : availableVoices);
 
       if (!selectedVoice) {
-        const googleVoice = koreanVoices.find(voice => voice.name.includes('Google'));
+        const googleVoice = koreanVoices.find(voice => voice.name === 'Google 한국의');
+        const appleVoice = koreanVoices.find(voice => voice.name === 'Yuna');
+
         if (googleVoice) {
           setSelectedVoice(googleVoice.voiceURI);
+        } else if (appleVoice) {
+          setSelectedVoice(appleVoice.voiceURI);
         } else if (koreanVoices.length > 0) {
           setSelectedVoice(koreanVoices[0].voiceURI);
         } else if (availableVoices.length > 0) {

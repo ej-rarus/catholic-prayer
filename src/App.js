@@ -340,6 +340,8 @@ function App() {
   };
 
   const handleLogoClick = () => {
+    goToHome(); // Navigate to home on every click
+
     const newClickCount = logoClickCount + 1;
     setLogoClickCount(newClickCount);
 

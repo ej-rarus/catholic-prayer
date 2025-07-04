@@ -240,15 +240,13 @@ function App() {
   const [showSearch, setShowSearch] = useState(false); // State for showing/hiding search
   const [searchTerm, setSearchTerm] = useState(''); // State for search term
   const [filteredPrayers, setFilteredPrayers] = useState([]); // State for filtered prayers
-  const [favorites, setFavorites] = useState([]); // State for favorite prayers
-
-  // Load favorites from localStorage on initial render
-  useEffect(() => {
+  const [logoClickCount, setLogoClickCount] = useState(0);
+  const [isLogoGlowing, setIsLogoGlowing] = useState(false);
+  const audioRef = useRef(null);
+  const [favorites, setFavorites] = useState(() => {
     const storedFavorites = localStorage.getItem('favorites');
-    if (storedFavorites) {
-      setFavorites(JSON.parse(storedFavorites));
-    }
-  }, []);
+    return storedFavorites ? JSON.parse(storedFavorites) : [];
+  }); // State for favorite prayers
 
   // Save favorites to localStorage whenever they change
   useEffect(() => {
@@ -335,10 +333,32 @@ function App() {
     setSearchTerm(''); // Clear search term
   };
 
+  const selectRandomPrayer = () => {
+    const randomIndex = Math.floor(Math.random() * prayers.length);
+    const randomPrayer = prayers[randomIndex];
+    selectPrayer(randomPrayer);
+  };
+
+  const handleLogoClick = () => {
+    const newClickCount = logoClickCount + 1;
+    setLogoClickCount(newClickCount);
+
+    if (newClickCount === 7) {
+      if (audioRef.current) {
+        audioRef.current.play();
+      }
+      setIsLogoGlowing(true);
+      setTimeout(() => {
+        setIsLogoGlowing(false);
+      }, 2000); // Glow for 2 seconds
+      setLogoClickCount(0); // Reset counter
+    }
+  };
+
   return (
     <div className="App">
       <header className="App-header">
-        <div className="header-main-content" onClick={goToHome} style={{ cursor: 'pointer' }}>
+        <div className={`header-main-content ${isLogoGlowing ? 'glow' : ''}`} onClick={handleLogoClick} style={{ cursor: 'pointer' }}>
           <img src="/logo.png" className="App-logo" alt="logo" />
           <h1>베다의 기도</h1>
           <p className="App-subtitle">가톨릭 기도문 암송 도우미</p>
@@ -347,12 +367,16 @@ function App() {
           <button onClick={toggleTheme} className="theme-toggle-button">
             {theme === 'light' ? '🌙' : '☀️'}
           </button>
+          <button onClick={selectRandomPrayer} className="random-prayer-button">
+            🔀
+          </button>
           <button onClick={() => setShowSearch(!showSearch)} className="search-toggle-button">
             🔍
           </button>
         </div>
       </header>
       <main>
+        <audio ref={audioRef} src="/church-bell.wav" preload="auto"></audio>
         {showSearch && (
           <div className="search-container">
             <input

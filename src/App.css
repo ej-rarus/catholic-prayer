@@ -61,22 +61,6 @@ h1 {
   color: var(--button-text-color);
 }
 
-.theme-toggle-button, .search-toggle-button {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  color: var(--button-text-color);
-  transition: transform 0.2s ease-in-out;
-  padding: 5px; /* Add padding for better click area */
-  border-radius: 5px; /* Slightly rounded corners */
-}
-
-.theme-toggle-button:hover, .search-toggle-button:hover {
-  transform: scale(1.1);
-  background-color: rgba(255, 255, 255, 0.2); /* Subtle hover effect */
-}
-
 /* Search styles */
 .search-container {
   margin-top: 0px; /* Adjust based on new header height */
@@ -175,6 +159,18 @@ main {
 
 .prayer-buttons button:hover {
   background-color: #e0e0e0;
+}
+
+/* Easter Egg Glow Effect */
+@keyframes glow-effect {
+  0% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.2); }
+  50% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.9), 0 0 40px rgba(255, 215, 0, 0.9); }
+  100% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.2); }
+}
+
+.header-main-content.glow {
+  animation: glow-effect 2s ease-in-out;
+  border-radius: 15px; /* To make the glow effect look smoother */
 }
 
 /* Favorite Icon Styles */
@@ -451,12 +447,12 @@ main {
 .header-buttons {
   position: absolute;
   top: 10px; /* Adjusted to move higher */
-  right: 20px;
+  right: 10px;
   display: flex;
-  gap: 10px;
+  gap: 5px;
 }
 
-.theme-toggle-button, .search-toggle-button {
+.theme-toggle-button, .search-toggle-button, .random-prayer-button {
   background: none;
   border: none;
   font-size: 1.5rem;
@@ -467,7 +463,7 @@ main {
   border-radius: 5px; /* Slightly rounded corners */
 }
 
-.theme-toggle-button:hover, .search-toggle-button:hover {
+.theme-toggle-button:hover, .search-toggle-button:hover, .random-prayer-button:hover {
   transform: scale(1.1);
   background-color: rgba(255, 255, 255, 0.2); /* Subtle hover effect */
 }

@@ -14,6 +14,8 @@ function PrayerDetail({
   setSelectedVoice,
   isSpeaking,
   setIsSpeaking,
+  favorites,
+  toggleFavorite,
 }) {
   const { prayerTitle } = useParams();
   const navigate = useNavigate();
@@ -143,6 +145,12 @@ function PrayerDetail({
       <div className="prayer-title-header">
         <button className="back-button" onClick={goBack}>←</button>
         <h2>{selectedPrayer.title}</h2>
+        <span 
+          className={`favorite-icon-detail ${favorites.includes(selectedPrayer.title) ? 'favorited' : ''}`}
+          onClick={() => toggleFavorite(selectedPrayer.title)}
+        >
+          ★
+        </span>
       </div>
       <div className="prayer-content">
         {selectedPrayer.content.map((line, index) => (
@@ -181,9 +189,18 @@ function PrayerDetail({
   );
 }
 
-function Home({
-  selectPrayer,
-}) {
+function Home({ selectPrayer, favorites, toggleFavorite }) {
+  const [filter, setFilter] = useState('all'); // 'all' or 'favorites'
+
+  const filteredPrayers = filter === 'all' 
+    ? prayers 
+    : prayers.filter(p => favorites.includes(p.title));
+
+  const handleFavoriteClick = (e, prayerTitle) => {
+    e.stopPropagation(); // Prevent prayer selection when clicking the star
+    toggleFavorite(prayerTitle);
+  };
+
   return (
     <div className="prayer-selection">
       <Helmet>
@@ -191,11 +208,23 @@ function Home({
         <meta name="description" content="가톨릭 기도문 암송을 도와주는 웹 애플리케이션입니다. 다양한 기도문을 선택하고 음성으로 들으며 암송 연습을 할 수 있습니다." />
       </Helmet>
       <h2>기도문 선택</h2>
+      <div className="filter-buttons">
+        <button onClick={() => setFilter('all')} className={filter === 'all' ? 'active' : ''}>전체</button>
+        <button onClick={() => setFilter('favorites')} className={filter === 'favorites' ? 'active' : ''}>즐겨찾기</button>
+      </div>
       <div className="prayer-buttons">
-        {prayers.map((prayer, index) => (
-          <button key={index} onClick={() => selectPrayer(prayer)}>
-            {prayer.title}
-          </button>
+        {filteredPrayers.map((prayer, index) => (
+          <div key={index} className="prayer-button-container">
+            <button onClick={() => selectPrayer(prayer)}>
+              {prayer.title}
+            </button>
+            <span 
+              className={`favorite-icon ${favorites.includes(prayer.title) ? 'favorited' : ''}`}
+              onClick={(e) => handleFavoriteClick(e, prayer.title)}
+            >
+              ★
+            </span>
+          </div>
         ))}
       </div>
       <ShareButtons shareTitle="가톨릭 기도문 암송 도우미" shareDescription="가톨릭 기도문 암송을 도와주는 웹 애플리케이션입니다. 다양한 기도문을 선택하고 음성으로 들으며 암송 연습을 할 수 있습니다." />
@@ -211,6 +240,30 @@ function App() {
   const [showSearch, setShowSearch] = useState(false); // State for showing/hiding search
   const [searchTerm, setSearchTerm] = useState(''); // State for search term
   const [filteredPrayers, setFilteredPrayers] = useState([]); // State for filtered prayers
+  const [favorites, setFavorites] = useState([]); // State for favorite prayers
+
+  // Load favorites from localStorage on initial render
+  useEffect(() => {
+    const storedFavorites = localStorage.getItem('favorites');
+    if (storedFavorites) {
+      setFavorites(JSON.parse(storedFavorites));
+    }
+  }, []);
+
+  // Save favorites to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+  }, [favorites]);
+
+  const toggleFavorite = (prayerTitle) => {
+    setFavorites(prevFavorites => {
+      if (prevFavorites.includes(prayerTitle)) {
+        return prevFavorites.filter(title => title !== prayerTitle);
+      } else {
+        return [...prevFavorites, prayerTitle];
+      }
+    });
+  };
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -324,7 +377,16 @@ function App() {
           </div>
         )}
         <Routes>
-          <Route path="/" element={<Home selectPrayer={selectPrayer} />} />
+          <Route
+            path="/"
+            element={
+              <Home
+                selectPrayer={selectPrayer}
+                favorites={favorites}
+                toggleFavorite={toggleFavorite}
+              />
+            }
+          />
           <Route
             path="/prayer/:prayerTitle"
             element={
@@ -334,6 +396,8 @@ function App() {
                 setSelectedVoice={setSelectedVoice}
                 isSpeaking={isSpeaking}
                 setIsSpeaking={setIsSpeaking}
+                favorites={favorites}
+                toggleFavorite={toggleFavorite}
               />
             }
           />

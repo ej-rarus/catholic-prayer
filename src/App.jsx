@@ -7,6 +7,7 @@ import Footer from './Footer';
 import ScrollButtons from './ScrollButtons';
 import ShareButtons from './ShareButtons'; // Import ShareButtons
 import { useTheme } from './ThemeContext'; // Import useTheme
+import { Analytics } from "@vercel/analytics/react"
 
 function PrayerDetail({
   voices,
@@ -363,6 +364,7 @@ function App() {
 
   return (
     <div className="App">
+      <Analytics/>
       <header className="App-header">
         <div className={`header-main-content ${isLogoGlowing ? 'glow' : ''}`} onClick={handleLogoClick} style={{ cursor: 'pointer' }}>
           <img src="/logo.png" className="App-logo" alt="logo" />

@@ -35,7 +35,7 @@ function ShareButtons({ shareTitle, shareDescription }) {
           title: titleToShare,
           description: descriptionToShare, 
           imageUrl:
-            `${window.location.origin}/logo512.png`, // Use absolute URL for image
+            "https://praywithbeda.com/og-thumbnail.png", // Use absolute URL for image
           link: {
             mobileWebUrl: currentUrl,
             webUrl: currentUrl,

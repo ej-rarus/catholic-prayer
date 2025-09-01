@@ -9,10 +9,12 @@ function ShareButtons({ shareTitle, shareDescription }) {
       
       // 카카오 SDK 초기화
       if (window.Kakao && !window.Kakao.isInitialized()) {
-        // 여기에 실제 카카오 JavaScript 키를 입력해야 합니다
-        // 개발용 키: 'YOUR_KAKAO_JAVASCRIPT_KEY'
-        // 프로덕션용 키: 실제 등록된 도메인의 키
-        window.Kakao.init('YOUR_KAKAO_JAVASCRIPT_KEY');
+        const kakaoKey = process.env.NEXT_PUBLIC_KAKAO_JAVASCRIPT_KEY;
+        if (kakaoKey) {
+          window.Kakao.init(kakaoKey);
+        } else {
+          console.error('카카오 JavaScript 키가 설정되지 않았습니다. .env 파일을 확인해주세요.');
+        }
       }
     }
   }, []);

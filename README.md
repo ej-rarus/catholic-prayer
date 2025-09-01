@@ -18,11 +18,13 @@
 
 ## 🛠️ 기술 스택
 
-*   **Frontend**: React.js
-*   **Routing**: React Router
+*   **Frontend**: React.js 18
+*   **Framework**: Next.js 15 (SSR 지원)
+*   **Routing**: Next.js 파일 기반 라우팅
 *   **State Management**: React Hooks (`useState`, `useEffect`, `useRef`)
 *   **Styling**: CSS
 *   **Core Web APIs**: Web Speech API (Text-to-Speech), Local Storage
+*   **SEO**: Server-Side Rendering, 메타데이터 최적화
 
 ## 🚀 시작하기
 
@@ -41,9 +43,15 @@
 
 3.  **개발 서버 실행**
     ```bash
-    npm start
+    npm run dev
     ```
     이제 브라우저에서 `http://localhost:3000`으로 접속하여 앱을 확인할 수 있습니다.
+
+4.  **프로덕션 빌드**
+    ```bash
+    npm run build
+    npm start
+    ```
 
 ## 🤫 숨겨진 기능
 

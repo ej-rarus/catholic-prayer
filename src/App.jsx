@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate, useParams, useLocation } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
 import './App.css';
 import { prayers } from './prayers';
 import Footer from './Footer';
@@ -139,10 +138,6 @@ function PrayerDetail({
 
   return (
     <div className="prayer-view">
-      <Helmet>
-        <title>{selectedPrayer.title} - 가톨릭 기도문 암송 도우미</title>
-        <meta name="description" content={`${selectedPrayer.title} 기도문 암송을 도와주는 도우미 앱입니다.`} />
-      </Helmet>
       <div className="prayer-title-header">
         <button className="back-button" onClick={goBack}>←</button>
         <h2>{selectedPrayer.title}</h2>
@@ -204,10 +199,6 @@ function Home({ selectPrayer, favorites, toggleFavorite }) {
 
   return (
     <div className="prayer-selection">
-      <Helmet>
-        <title>가톨릭 기도문 암송 도우미</title>
-        <meta name="description" content="가톨릭 기도문 암송을 도와주는 웹 애플리케이션입니다. 다양한 기도문을 선택하고 음성으로 들으며 암송 연습을 할 수 있습니다." />
-      </Helmet>
       <h2>기도문 선택</h2>
       <div className="filter-buttons">
         <button onClick={() => setFilter('all')} className={filter === 'all' ? 'active' : ''}>전체</button>

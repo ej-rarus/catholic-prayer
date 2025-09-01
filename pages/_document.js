@@ -12,6 +12,7 @@ export default function Document() {
         <meta property="og:description" content="가톨릭 기도문 암송을 도와주는 웹 애플리케이션입니다." />
         <meta property="og:image" content="/og-thumbnail.png" />
         <meta property="og:type" content="website" />
+        <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
       </Head>
       <body>
         <Main />

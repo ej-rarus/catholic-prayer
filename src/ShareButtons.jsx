@@ -6,6 +6,14 @@ function ShareButtons({ shareTitle, shareDescription }) {
   React.useEffect(() => {
     if (typeof window !== 'undefined') {
       setCurrentUrl(window.location.href);
+      
+      // 카카오 SDK 초기화
+      if (window.Kakao && !window.Kakao.isInitialized()) {
+        // 여기에 실제 카카오 JavaScript 키를 입력해야 합니다
+        // 개발용 키: 'YOUR_KAKAO_JAVASCRIPT_KEY'
+        // 프로덕션용 키: 실제 등록된 도메인의 키
+        window.Kakao.init('YOUR_KAKAO_JAVASCRIPT_KEY');
+      }
     }
   }, []);
 
@@ -27,21 +35,26 @@ function ShareButtons({ shareTitle, shareDescription }) {
   };
 
   const shareKakao = () => {
-    if (window.Kakao) {
-      const Kakao = window.Kakao;
-      if (!Kakao.isInitialized()) {
-        console.error('Kakao SDK is not initialized. Please check your JavaScript Key.');
-        alert('카카오 SDK 초기화에 실패했습니다. 개발자 키를 확인해주세요.');
-        return;
-      }
+    if (!window.Kakao) {
+      alert('카카오 SDK가 로드되지 않았습니다. 잠시 후 다시 시도해주세요.');
+      return;
+    }
 
+    const Kakao = window.Kakao;
+    
+    if (!Kakao.isInitialized()) {
+      console.error('Kakao SDK is not initialized. Please check your JavaScript Key.');
+      alert('카카오 SDK 초기화에 실패했습니다. 개발자 키를 확인해주세요.');
+      return;
+    }
+
+    try {
       Kakao.Share.sendDefault({
         objectType: 'feed',
         content: {
           title: titleToShare,
           description: descriptionToShare, 
-          imageUrl:
-            "https://praywithbeda.com/og-thumbnail.png", // Use absolute URL for image
+          imageUrl: "https://praywithbeda.com/og-thumbnail.png",
           link: {
             mobileWebUrl: currentUrl,
             webUrl: currentUrl,
@@ -57,8 +70,9 @@ function ShareButtons({ shareTitle, shareDescription }) {
           },
         ],
       });
-    } else {
-      alert('카카오 SDK가 로드되지 않았습니다.');
+    } catch (error) {
+      console.error('카카오톡 공유 실패:', error);
+      alert('카카오톡 공유에 실패했습니다. 잠시 후 다시 시도해주세요.');
     }
   };
 

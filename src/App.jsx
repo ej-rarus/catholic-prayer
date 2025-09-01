@@ -18,7 +18,7 @@ function PrayerDetail({
   favorites,
   toggleFavorite,
 }) {
-  const { prayerTitle } = useParams();
+  const { prayerId } = useParams();
   const navigate = useNavigate();
   const [selectedPrayer, setSelectedPrayer] = useState(null);
   const [hiddenLines, setHiddenLines] = useState([]);
@@ -30,7 +30,7 @@ function PrayerDetail({
   const speechPitch = 0.9;
 
   useEffect(() => {
-    const prayer = prayers.find(p => p.title === prayerTitle);
+    const prayer = prayers.find(p => p.id === parseInt(prayerId));
     if (prayer) {
       setSelectedPrayer(prayer);
       setHiddenLines(Array(prayer.content.length).fill(false));
@@ -40,7 +40,7 @@ function PrayerDetail({
     window.speechSynthesis.cancel();
     setIsSpeaking(false);
     setCurrentSpeakingLineIndex(-1); // Reset highlight on prayer change
-  }, [prayerTitle, navigate, setIsSpeaking]);
+  }, [prayerId, navigate, setIsSpeaking]);
 
   const toggleLine = (index) => {
     const newHiddenLines = [...hiddenLines];
@@ -147,8 +147,8 @@ function PrayerDetail({
         <button className="back-button" onClick={goBack}>←</button>
         <h2>{selectedPrayer.title}</h2>
         <span 
-          className={`favorite-icon-detail ${favorites.includes(selectedPrayer.title) ? 'favorited' : ''}`}
-          onClick={() => toggleFavorite(selectedPrayer.title)}
+          className={`favorite-icon-detail ${favorites.includes(selectedPrayer.id) ? 'favorited' : ''}`}
+          onClick={() => toggleFavorite(selectedPrayer.id)}
         >
           ★
         </span>
@@ -195,11 +195,11 @@ function Home({ selectPrayer, favorites, toggleFavorite }) {
 
   const filteredPrayers = filter === 'all' 
     ? prayers 
-    : prayers.filter(p => favorites.includes(p.title));
+    : prayers.filter(p => favorites.includes(p.id));
 
-  const handleFavoriteClick = (e, prayerTitle) => {
+  const handleFavoriteClick = (e, prayerId) => {
     e.stopPropagation(); // Prevent prayer selection when clicking the star
-    toggleFavorite(prayerTitle);
+    toggleFavorite(prayerId);
   };
 
   return (
@@ -220,8 +220,8 @@ function Home({ selectPrayer, favorites, toggleFavorite }) {
               {prayer.title}
             </button>
             <span 
-              className={`favorite-icon ${favorites.includes(prayer.title) ? 'favorited' : ''}`}
-              onClick={(e) => handleFavoriteClick(e, prayer.title)}
+              className={`favorite-icon ${favorites.includes(prayer.id) ? 'favorited' : ''}`}
+              onClick={(e) => handleFavoriteClick(e, prayer.id)}
             >
               ★
             </span>
@@ -254,12 +254,12 @@ function App() {
     localStorage.setItem('favorites', JSON.stringify(favorites));
   }, [favorites]);
 
-  const toggleFavorite = (prayerTitle) => {
+  const toggleFavorite = (prayerId) => {
     setFavorites(prevFavorites => {
-      if (prevFavorites.includes(prayerTitle)) {
-        return prevFavorites.filter(title => title !== prayerTitle);
+      if (prevFavorites.includes(prayerId)) {
+        return prevFavorites.filter(id => id !== prayerId);
       } else {
-        return [...prevFavorites, prayerTitle];
+        return [...prevFavorites, prayerId];
       }
     });
   };
@@ -325,7 +325,7 @@ function App() {
   const selectPrayer = (prayer) => {
     window.speechSynthesis.cancel();
     setIsSpeaking(false);
-    navigate(`/prayer/${prayer.title}`);
+    navigate(`/prayer/${prayer.id}`);
     setShowSearch(false); // Hide search results after selection
     setSearchTerm(''); // Clear search term
   };
@@ -397,7 +397,7 @@ function App() {
             {searchTerm && filteredPrayers.length > 0 && (
               <ul className="search-results">
                 {filteredPrayers.map((prayer) => (
-                  <li key={prayer.title} onClick={() => selectPrayer(prayer)}>
+                  <li key={prayer.id} onClick={() => selectPrayer(prayer)}>
                     {prayer.title}
                   </li>
                 ))}
@@ -420,7 +420,7 @@ function App() {
             }
           />
           <Route
-            path="/prayer/:prayerTitle"
+            path="/prayer/:prayerId"
             element={
               <PrayerDetail
                 voices={voices}

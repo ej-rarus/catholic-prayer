@@ -202,9 +202,54 @@ export default function PrayerDetail() {
     <>
       <Head>
         <title>{selectedPrayer.title} - 가톨릭 기도문 암송 도우미</title>
-        <meta name="description" content={`${selectedPrayer.title} 기도문 암송을 도와주는 도우미 앱입니다.`} />
+        <meta name="description" content={`${selectedPrayer.title} 기도문 암송을 도와주는 도우미 앱입니다. 음성으로 들으며 암송 연습을 할 수 있습니다.`} />
+        <meta name="keywords" content={`가톨릭, 기도문, ${selectedPrayer.title}, 암송, 음성재생`} />
+        <meta name="author" content="베다의 기도" />
         <meta property="og:title" content={`${selectedPrayer.title} - 가톨릭 기도문 암송 도우미`} />
         <meta property="og:description" content={`${selectedPrayer.title} 기도문 암송을 도와주는 도우미 앱입니다.`} />
+        <meta property="og:image" content="/og-thumbnail.png" />
+        <meta property="og:url" content={`https://catholic-prayer.vercel.app/prayer/${encodeURIComponent(selectedPrayer.title)}`} />
+        <meta property="og:type" content="article" />
+        <meta property="og:locale" content="ko_KR" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={`${selectedPrayer.title} - 가톨릭 기도문 암송 도우미`} />
+        <meta name="twitter:description" content={`${selectedPrayer.title} 기도문 암송을 도와주는 도우미 앱입니다.`} />
+        <meta name="twitter:image" content="/og-thumbnail.png" />
+        <link rel="canonical" href={`https://catholic-prayer.vercel.app/prayer/${encodeURIComponent(selectedPrayer.title)}`} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Article",
+              "headline": selectedPrayer.title,
+              "description": `${selectedPrayer.title} 기도문 암송을 도와주는 도우미 앱입니다.`,
+              "url": `https://catholic-prayer.vercel.app/prayer/${encodeURIComponent(selectedPrayer.title)}`,
+              "author": {
+                "@type": "Organization",
+                "name": "베다의 기도"
+              },
+              "publisher": {
+                "@type": "Organization",
+                "name": "베다의 기도",
+                "logo": {
+                  "@type": "ImageObject",
+                  "url": "https://catholic-prayer.vercel.app/logo.png"
+                }
+              },
+              "datePublished": "2024-12-19",
+              "dateModified": "2024-12-19",
+              "inLanguage": "ko-KR",
+              "mainEntityOfPage": {
+                "@type": "WebPage",
+                "@id": `https://catholic-prayer.vercel.app/prayer/${encodeURIComponent(selectedPrayer.title)}`
+              },
+              "articleSection": "가톨릭 기도문",
+              "keywords": `가톨릭, 기도문, ${selectedPrayer.title}, 암송, 음성재생`,
+              "text": selectedPrayer.content.join(' ')
+            })
+          }}
+        />
       </Head>
 
       <div className="prayer-view">

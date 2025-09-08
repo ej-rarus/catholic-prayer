@@ -64,9 +64,51 @@ export default function Home() {
       <Head>
         <title>베다의 기도 - 가톨릭 기도문 암송 도우미</title>
         <meta name="description" content="가톨릭 기도문 암송을 도와주는 웹 애플리케이션입니다. 다양한 기도문을 선택하고 음성으로 들으며 암송 연습을 할 수 있습니다." />
+        <meta name="keywords" content="가톨릭, 기도문, 암송, 성호경, 주님의 기도, 성모송, 사도신경, 묵주기도" />
+        <meta name="author" content="베다의 기도" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta property="og:title" content="베다의 기도 - 가톨릭 기도문 암송 도우미" />
         <meta property="og:description" content="가톨릭 기도문 암송을 도와주는 웹 애플리케이션입니다." />
         <meta property="og:image" content="/og-thumbnail.png" />
+        <meta property="og:url" content="https://catholic-prayer.vercel.app/" />
+        <meta property="og:type" content="website" />
+        <meta property="og:locale" content="ko_KR" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="베다의 기도 - 가톨릭 기도문 암송 도우미" />
+        <meta name="twitter:description" content="가톨릭 기도문 암송을 도와주는 웹 애플리케이션입니다." />
+        <meta name="twitter:image" content="/og-thumbnail.png" />
+        <link rel="canonical" href="https://catholic-prayer.vercel.app/" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebApplication",
+              "name": "베다의 기도",
+              "description": "가톨릭 기도문 암송을 도와주는 웹 애플리케이션입니다.",
+              "url": "https://catholic-prayer.vercel.app/",
+              "applicationCategory": "EducationalApplication",
+              "operatingSystem": "Web Browser",
+              "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "KRW"
+              },
+              "author": {
+                "@type": "Organization",
+                "name": "베다의 기도"
+              },
+              "inLanguage": "ko-KR",
+              "isAccessibleForFree": true,
+              "featureList": [
+                "가톨릭 기도문 암송 연습",
+                "음성 재생 기능",
+                "즐겨찾기 기능",
+                "반응형 웹 디자인"
+              ]
+            })
+          }}
+        />
       </Head>
       
 

@@ -42,9 +42,11 @@ export default function PrayerDetail() {
 
   // localStorage에서 즐겨찾기 불러오기
   useEffect(() => {
-    const storedFavorites = localStorage.getItem('favorites');
-    if (storedFavorites) {
-      setFavorites(JSON.parse(storedFavorites));
+    if (typeof window !== 'undefined') {
+      const storedFavorites = localStorage.getItem('favorites');
+      if (storedFavorites) {
+        setFavorites(JSON.parse(storedFavorites));
+      }
     }
   }, []);
 
@@ -268,7 +270,7 @@ export default function PrayerDetail() {
           {selectedPrayer.content.map((line, index) => (
             <div key={index} className="prayer-line-container">
               <p
-                className={`prayer-line ${hiddenLines[index] ? 'hidden' : ''} ${currentSpeakingLineIndex === index ? 'highlighted' : ''}`}
+                className={`prayer-line ${hiddenLines[index] ? 'hidden' : ''} ${currentSpeakingLineIndex === index ? 'highlighted-line' : ''}`}
                 onClick={() => toggleLine(index)}
               >
                 {hiddenLines[index] ? '█'.repeat(line.length) : line}

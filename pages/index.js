@@ -10,6 +10,7 @@ export default function Home() {
   const router = useRouter();
   const { theme } = useTheme();
   const [favorites, setFavorites] = useState([]);
+  const [filter, setFilter] = useState('all');
 
   // localStorage에서 즐겨찾기 불러오기 (클라이언트 사이드에서만)
   useEffect(() => {
@@ -38,24 +39,12 @@ export default function Home() {
     });
   };
 
-
+  const filteredPrayers = filter === 'all'
+    ? prayers
+    : prayers.filter(p => favorites.includes(p.title));
 
   const selectPrayer = (prayer) => {
     router.push(`/prayer/${encodeURIComponent(prayer.title)}`);
-    setShowSearch(false);
-    setSearchTerm('');
-  };
-
-  const goToHome = () => {
-    router.push('/');
-    setShowSearch(false);
-    setSearchTerm('');
-  };
-
-  const selectRandomPrayer = () => {
-    const randomIndex = Math.floor(Math.random() * prayers.length);
-    const randomPrayer = prayers[randomIndex];
-    selectPrayer(randomPrayer);
   };
 
   return (
@@ -110,22 +99,31 @@ export default function Home() {
           }}
         />
       </Head>
-      
 
 
       <div className="prayer-selection">
         <h2>기도문 선택</h2>
         <div className="filter-buttons">
-          <button className="active">전체</button>
-          <button>즐겨찾기</button>
+          <button
+            className={filter === 'all' ? 'active' : ''}
+            onClick={() => setFilter('all')}
+          >
+            전체
+          </button>
+          <button
+            className={filter === 'favorites' ? 'active' : ''}
+            onClick={() => setFilter('favorites')}
+          >
+            즐겨찾기
+          </button>
         </div>
         <div className="prayer-buttons">
-          {prayers.map((prayer, index) => (
+          {filteredPrayers.map((prayer, index) => (
             <div key={index} className="prayer-button-container">
               <button onClick={() => selectPrayer(prayer)}>
                 {prayer.title}
               </button>
-              <span 
+              <span
                 className={`favorite-icon ${favorites.includes(prayer.title) ? 'favorited' : ''}`}
                 onClick={(e) => {
                   e.stopPropagation();

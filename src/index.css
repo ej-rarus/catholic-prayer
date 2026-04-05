@@ -1,42 +1,69 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
-  --background-color: #ffffff;
-  --text-color: #333333;
-  --primary-color: #007bff; /* Standard Blue */
-  --button-bg-color: #007bff;
-  --button-text-color: #ffffff;
-  --border-color: #cccccc;
-  --highlight-bg-color: #fffacd; /* LemonChiffon */
-  --highlight-text-color: #000000;
-  --footer-bg-color: #e0e0e0;
-  --footer-text-color: #555555;
+  --surface: #FCF9F2;
+  --surface-dim: #DCDAD3;
+  --surface-bright: #FCF9F2;
+  --surface-container: #F0EEE7;
+  --surface-container-lowest: #FFFFFF;
+  --surface-container-low: #F6F3EC;
+  --surface-container-high: #EBE8E1;
+  --surface-container-highest: #E5E2DB;
+  --on-surface: #1C1C18;
+  --on-surface-variant: #4D4635;
+  --primary: #735C00;
+  --primary-container: #D4AF37;
+  --on-primary: #FFFFFF;
+  --on-primary-container: #554300;
+  --secondary: #5F5E5E;
+  --outline-variant: #D0C5AF;
+  --outline: #7F7663;
+  --highlight-bg: #FFF9C4;
+  --highlight-text: #1C1C18;
+  --footer-bg: #F6F3EC;
+  --footer-text: rgba(28, 28, 24, 0.6);
 }
 
 [data-theme='dark'] {
-  --background-color: #282c34;
-  --text-color: #ffffff;
-  --primary-color: #9de0ff; /* Light Blue */
-  --button-bg-color: #9de0ff;
-  --button-text-color: #282c34;
-  --border-color: #555555;
-  --highlight-bg-color: #61dafb; /* Light Blue */
-  --highlight-text-color: #282c34;
-  --footer-bg-color: #1a1a1a;
-  --footer-text-color: #ffffff;
+  --surface: #1A1A1A;
+  --surface-dim: #151512;
+  --surface-bright: #1C1C18;
+  --surface-container: #242420;
+  --surface-container-lowest: #151512;
+  --surface-container-low: #2A2A24;
+  --surface-container-high: #2A2A24;
+  --surface-container-highest: #31312C;
+  --on-surface: #FCF9F2;
+  --on-surface-variant: #D0C5AF;
+  --primary: #D4AF37;
+  --primary-container: #D4AF37;
+  --on-primary: #1A1A1A;
+  --on-primary-container: #554300;
+  --secondary: #5F5E5E;
+  --outline-variant: #4D4635;
+  --outline: #7F7663;
+  --highlight-bg: rgba(115, 92, 0, 0.3);
+  --highlight-text: #FCF9F2;
+  --footer-bg: #151512;
+  --footer-text: rgba(252, 249, 242, 0.6);
 }
 
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: var(--background-color);
-  color: var(--text-color);
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
+@layer base {
+  body {
+    margin: 0;
+    font-family: 'Nanum Barun Gothic', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: var(--surface);
+    color: var(--on-surface);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    line-height: 1.6;
+  }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  ::selection {
+    background-color: rgba(212, 175, 55, 0.3);
+    color: var(--on-surface);
+  }
 }

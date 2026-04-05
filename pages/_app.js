@@ -8,9 +8,9 @@ import '../src/App.css';
 function MyApp({ Component, pageProps }) {
   return (
     <ThemeProvider>
-      <div className="App">
+      <div className="min-h-screen flex flex-col bg-surface text-on-surface font-gothic">
         <Header />
-        <main>
+        <main className="flex-grow pt-20">
           <Component {...pageProps} />
         </main>
         <Footer />
@@ -21,4 +21,3 @@ function MyApp({ Component, pageProps }) {
 }
 
 export default MyApp;
-
